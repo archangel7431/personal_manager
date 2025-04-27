@@ -160,4 +160,8 @@ cython_debug/
 #.idea/
 
 
+
+# Project specific files
 idea.md
+what_i_have_done.md
+personal_manager/expense_entry_and_tracking/documentation_trial.md

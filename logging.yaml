@@ -1,0 +1,39 @@
+version: 1
+disable_existing_loggers: False
+
+# Define the formatter: this is how the log messages will be formatted
+# and what information they will contain
+formatters:
+  default:
+    format: '{asctime} - {name} - {levelname} - {message}'
+    style: '{'
+    datefmt: '%Y-%m-%d  %H:%M:%S'
+
+# Define the handlers: this is where the log messages will be sent
+# and how they will be processed
+handlers:
+  # Console handler: sends log messages to the console
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: default
+    stream: ext://sys.stdout
+
+  # File handler: sends log messages to a file. The file will be 
+  # rotated when it reaches a certain size(5 MB)
+  file:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: default
+    filename: 'app.log'
+    encoding: 'utf-8'
+    mode: 'a'
+    maxBytes: 5242880 # 5 MB
+    backupCount: 5
+
+# Define the loggers: these are the components of the application
+loggers:
+  # Root logger: the main logger that all other loggers inherit from
+  root:
+    level: DEBUG
+    handlers: [console, file]
