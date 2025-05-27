@@ -160,6 +160,9 @@ cython_debug/
 #.idea/
 
 
+# VS code
+.vscode/
+
 
 # Project specific files
 idea.md
