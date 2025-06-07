@@ -1,7 +1,7 @@
 import logging.config
 import yaml
 
-def setup_logging(config_path='logging_config.yaml'):
+def setup_logging(config_path: str='logging_config.yaml'):
     """
     Setup logging configuration from a YAML file.
     

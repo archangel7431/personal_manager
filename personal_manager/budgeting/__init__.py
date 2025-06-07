@@ -9,6 +9,3 @@ setup_logging()
 
 # Create a logger for the module
 logger = logging.getLogger(__name__)
-
-
-
