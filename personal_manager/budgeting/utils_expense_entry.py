@@ -1,6 +1,7 @@
 # trial run
 import csv
 import os
+import schedule
 from datetime import date
 
 from . import logger
@@ -207,6 +208,25 @@ def expense_entry(write_file_path: str ="./personal_manager/budgeting/data/budge
     # Log the successful completion of the program
     logger.debug("Expense entry program completed successfully.")
 
+
+# Function to run the main function daily at a specific time
+def run_daily(time: str = "21:30") -> None:
+    """
+    Run the main function daily at a specific time.
+    
+    Args:
+        time (str): The time at which the function should run daily in "HH:MM" format. Default is "21:30".
+    Returns:
+        None
+    """
+    logger.debug(f"The function {run_daily.__name__} is for scheduling the daily execution.")
+
+    # Schedule the expense entry function to run daily at the specified time
+    schedule.every().day.at(time).do(job_func=expense_entry)
+    logger.info(f"Scheduled the expense entry function to run daily at {time}.")
+
+    return None
+    
 
 if __name__ == "__main__":
     # Run the main function
