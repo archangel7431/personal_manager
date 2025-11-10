@@ -11,3 +11,4 @@ I have also added a `run_daily` function which can trigger the function at a spe
 The `trial.py` creates a csv file but it doesn't recognize the issue if the file is there with no headings. NEED TO RECTIFY THIS.
 
 # Trial 2
+I was able to run the `Budget` class created in `app.py`. I am able to run the add expenses method of the class.

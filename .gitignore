@@ -166,3 +166,4 @@ cython_debug/
 
 # Project specific files
 *.md    # Markdown files
+*/*/data/

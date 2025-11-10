@@ -1,5 +1,6 @@
+import os
 from . import logger
-from .utils_expense_entry import expense_entry
+from .utils_expense_entry import expense_entry, run_daily
 
 
 class Budget:
@@ -17,4 +18,26 @@ class Budget:
         self.expenses = []
     
     def add_expense(self):
+        """
+        Add expenses to the file/ database
+        """
         expense_entry(write_file_path=self.expenses_file_path)
+    
+    def run_expense_entry_daily(self):
+        """
+        Run the expense entry daily
+        """
+        run_daily()
+
+
+
+if __name__ == "__main__":
+    logger.debug("Starting the program execution.")
+
+    # Run expenses
+    expenses_write_file_path = os.path.join(os.path.dirname(__file__), "data/budget.csv")
+    budget = Budget(0, expenses_write_file_path)
+    budget.add_expense()
+
+    logger.debug("Program execution completed.")
+    
