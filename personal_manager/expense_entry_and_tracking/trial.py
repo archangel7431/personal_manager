@@ -1,8 +1,10 @@
 # trial run
 
 from datetime import date
+from pathlib import Path
 
-with open("./personal_manager/budgeting/trial.txt", "a") as f:
+trial_file = Path("personal_manager/expense_entry_and_tracking/trial.txt")
+with trial_file.open("a") as f:
     print()
     f.write(f"{date.today()}\n")
     while True:
