@@ -162,7 +162,17 @@ cython_debug/
 # VSCode
 .vscode/
 
-# Project specific files
-idea.md
-what_i_have_done.md
-personal_manager/expense_entry_and_tracking/documentation_trial.md
+## Project specific files / folders
+
+# Markdown files
+*.md
+# Do not ignore these files
+!CLAUDE.md
+!README.md
+
+# Storage of data and logs
+data/
+
+# Plugin settings
+personal_manager.toml
+
