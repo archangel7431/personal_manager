@@ -162,6 +162,17 @@ cython_debug/
 # VSCode
 .vscode/
 
-# Project specific files
-*.md    # Markdown files
-*/*/data/
+## Project specific files / folders
+
+# Markdown files
+*.md
+# Do not ignore these files
+!CLAUDE.md
+!README.md
+
+# Storage of data and logs
+data/
+
+# Plugin settings
+personal_manager.toml
+
