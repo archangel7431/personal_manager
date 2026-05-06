@@ -10,44 +10,33 @@ uv sync
 
 This creates `.venv` and installs all dependencies from `uv.lock`. Add new dependencies via `uv add <package>`.
 
+Dependencies: `PyYAML==6.0.2`, `schedule==1.2.2`.
+
 ## Running the App
 
-Run the budgeting module directly (must be run from the repo root so `logging_config.yaml` is resolvable):
+Always run from the repo root so `logging.yaml` is resolvable:
 ```bash
-uv run python -m personal_manager.budgeting.app
+uv run python -m personal_manager.expense_entry_and_tracking.<module>
 ```
 
 ## Running Tests
 
-Run all tests from the repo root:
 ```bash
-uv run python -m unittest discover -s personal_manager -p "utils_test.py"
+uv run python -m unittest discover -s personal_manager -p "*_test.py"
 ```
 
-Run a single test class:
+Single test class or method:
 ```bash
-uv run python -m unittest personal_manager.budgeting.utils_test.TestBudget
+uv run python -m unittest personal_manager.<subpackage>.<test_module>.<TestClass>
+uv run python -m unittest personal_manager.<subpackage>.<test_module>.<TestClass>.<test_method>
 ```
 
-Run a single test method:
-```bash
-uv run python -m unittest personal_manager.budgeting.utils_test.TestBudget.test_expense_entry
-```
+**Logging** is configured globally via `logging.yaml` (repo root) and loaded through `logging_config.py`. 
+- **`app_errors.log`**: Root log file capturing `ERROR` level and above for the entire application.
+- **Dynamic `activity.log`**: Each module automatically gets an `activity.log` file in its own directory capturing `DEBUG` level and above. This is handled by `logging_config.py:setup_logging()` which uses `inspect` to detect the calling module.
+- Each `__init__.py` should simply call `setup_logging()` (no arguments needed) to initialize both global and module-specific logging.
 
-## Architecture
-
-The repo is structured as a personal manager app where each feature lives in its own sub-package under `personal_manager/`. Currently only the `budgeting` sub-package exists.
-
-**Key structural rules (from `idea.md`):**
-- Each feature is a separate folder/module with its own `__init__.py` and a `documentation_trial.md`
-- Build prototypes first, then iterate
-
-**Logging** is configured globally via `logging_config.yaml` (repo root) and loaded through `logging_config.py`. Every sub-package imports `setup_logging()` and creates a `logger = logging.getLogger(__name__)` in its `__init__.py`. The `logging_config.yaml` must be present in the working directory at runtime (i.e., run from repo root).
-
-**Budgeting sub-package** (`personal_manager/budgeting/`):
-- `__init__.py` — sets up logging and exposes `expense_entry`
-- `utils_expense_entry.py` — all business logic: directory/file setup, CSV append, interactive user input loop, daily scheduling via `schedule`
-- `app.py` — entry point; instantiates `Budget` and calls `add_expense()`
-- Data is stored as CSV at `personal_manager/budgeting/data/budget.csv` with columns `Date, Section_name, Section_value`
-
-**CSV header contract:** `["Date", "Section_name", "Section_value"]` — `checking_for_file` enforces this and backs up the old file if headers mismatch.
+**`expense_entry_and_tracking` sub-package** (`personal_manager/expense_entry_and_tracking/`):
+- Active development area for expense entry and tracking functionality
+- `__init__.py` — sets up logging for the sub-package
+- `trial.py` — early prototype: interactive CLI that appends dated expense entries to a flat text file
