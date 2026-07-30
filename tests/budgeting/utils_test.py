@@ -52,15 +52,19 @@ class TestBudget(unittest.TestCase):
             # Test when file doesn't exist
             with patch('pathlib.Path.exists', return_value=False):
                 checking_for_file(self.test_file)
-                mock_file.assert_called_once_with(mode='w', newline='')
-                mock_file().write.assert_called()  # Verify write was called
+                # Should call open for writing
+                mock_file.assert_called_with(mode='w', newline='')
 
-            # Test when file exists
+            # Test when file exists and has correct headers
             mock_file.reset_mock()
+            # Mock the read to return the expected header
+            from personal_manager.plugins.budgeting.utils_expense_entry import EXPECTED_HEADER
+            mock_file.return_value.__enter__.return_value = StringIO(",".join(EXPECTED_HEADER) + "\n")
+            
             with patch('pathlib.Path.exists', return_value=True):
                 checking_for_file(self.test_file)
-                # Should not try to create file again
-                self.assertEqual(mock_file.call_count, 0)
+                # Should call open for reading to validate headers
+                mock_file.assert_called_with(mode='r', newline='')
 
     def test_append_to_csv(self) -> None:
         """Test appending data to CSV file"""
@@ -140,6 +144,32 @@ class TestBudget(unittest.TestCase):
         
         mock_day.at.assert_called_once_with(test_time)
         mock_at.do.assert_called_once_with(job_func=expense_entry)
+
+    def test_checking_for_file_empty(self) -> None:
+        """Test that an empty file gets headers added."""
+        # Create an empty file
+        self.test_dir.mkdir(parents=True, exist_ok=True)
+        self.test_file.touch()
+        
+        checking_for_file(self.test_file)
+        
+        with open(self.test_file, 'r', newline='') as f:
+            reader = csv.reader(f)
+            header = next(reader)
+            from personal_manager.plugins.budgeting.utils_expense_entry import EXPECTED_HEADER
+            self.assertEqual(header, EXPECTED_HEADER)
+
+    def test_checking_for_file_mismatch(self) -> None:
+        """Test that a file with wrong headers causes SystemExit."""
+        self.test_dir.mkdir(parents=True, exist_ok=True)
+        with open(self.test_file, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(["Wrong", "Header", "Names"])
+            
+        with self.assertRaises(SystemExit) as cm:
+            checking_for_file(self.test_file)
+        
+        self.assertEqual(cm.exception.code, 1)
 
 
 if __name__ == '__main__':

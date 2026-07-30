@@ -1,0 +1,2 @@
+1. I learned that to run a package, we have a separate file `__main__.py`. `__init__.py` is just to initilaize the package. It provides the objects accessible to the whole package. These objects are imported when we import the package. `__main__.py` is the file that runs when we run the package. 
+2. Modules are single python files containing some functions and objects. Packages are a collection of many modules and submodules and is recognized by the `__init__.py`

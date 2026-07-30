@@ -1,10 +1,15 @@
 # trial run
 import csv
+import sys
 import schedule
 from datetime import date
 from pathlib import Path
 
 from . import logger
+
+
+# Constants
+EXPECTED_HEADER = ["Date", "Section_name", "Section_value"]
 
 
 # Function to check if the directory exists and create it if not
@@ -42,16 +47,45 @@ def checking_for_file(filepath: Path) -> None:
     logger.debug(f"Entering {checking_for_file.__name__} function with filepath: {filepath}")
 
     try:
-        # Check if the file exists, if not create it
+        # Check if the file exists, if not create it with headers
         if not filepath.exists():
             with filepath.open(mode="w", newline="") as file:
                 writer = csv.writer(file)
-                section_name = "Section_name"
-                section_value = "Section_value"
-                writer.writerow(["Date", section_name, section_value])
+                writer.writerow(EXPECTED_HEADER)
                 logger.debug(f"Created {filepath} and wrote header.")
-        else:
-            logger.debug(f"{filepath} already exists.")
+            return
+
+        logger.debug(f"File {filepath} already exists. Validating headers.")
+
+        # If the file exists, check if headers are present and correct.
+        with filepath.open(mode="r", newline="") as file:
+            reader = csv.reader(file)
+            try:
+                first_row = next(reader)
+                if first_row == EXPECTED_HEADER:
+                    logger.debug(f"Headers already present and correct in {filepath}.")
+                else:
+                    msg = (
+                        f"CRITICAL ERROR: CSV header mismatch in {filepath}.\n"
+                        f"Expected: {EXPECTED_HEADER}\n"
+                        f"Found:    {first_row}\n"
+                        "To prevent data corruption, the application will exit.\n"
+                        "Please verify the file content or delete it to start fresh."
+                    )
+                    logger.critical(msg)
+                    print(f"\n{msg}")
+                    sys.exit(1)
+            except StopIteration:
+                # File exists but is empty
+                logger.debug(f"File {filepath} is empty. Adding headers.")
+                with filepath.open(mode="w", newline="") as write_file:
+                    writer = csv.writer(write_file)
+                    writer.writerow(EXPECTED_HEADER)
+                    logger.debug(f"Wrote header to {filepath}.")
+                
+    except SystemExit:
+        # Re-raise SystemExit to ensure the app actually exits
+        raise
     except Exception as e:
         logger.error(f"An error occurred while checking/creating the file: {e}")
     finally:

@@ -6,7 +6,7 @@ from logging.handlers import RotatingFileHandler
 
 _config_loaded = False
 
-def setup_logging(module_name=None, config_path='logging.yaml'):
+def setup_logging(module_name=None, config_path='logging_config.yaml'):
     """
     Setup logging configuration from a YAML file and automatically add 
     a module-specific activity log.
