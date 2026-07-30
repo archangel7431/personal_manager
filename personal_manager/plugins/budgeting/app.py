@@ -7,13 +7,13 @@ class Budget:
     """
     Manages budget balance and expense entries.
     """
-    def __init__(self, initial_balance: float, expenses_file_path: str) -> None:
+    def __init__(self, initial_balance: float = 0, expenses_file_path: str = "data/budget.csv") -> None:
         """
         Initializes the Budget manager.
         
         Args:
-            initial_balance: The starting balance.
-            expenses_file_path: Path to the CSV file where expenses are stored.
+            initial_balance: The starting balance. By default it is 0. 
+            expenses_file_path: Path to the CSV file where expenses are stored. By default it is "data/budget.csv".
         """
         if not isinstance(initial_balance, (int, float)) or initial_balance < 0: # type: ignore
             logger.error("Initial balance is wrong.")
