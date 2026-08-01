@@ -6,6 +6,10 @@ import csv
 from io import StringIO
 from typing import Any, Callable
 
+# Redirect CONFIG_FILE to a local sandbox path before importing modules that load config
+import personal_manager.core.config
+personal_manager.core.config.CONFIG_FILE = Path("./test_data/personal_manager.toml")
+
 from personal_manager.plugins.budgeting.utils_expense_entry import (
     checking_for_directory,
     checking_for_file,

@@ -1,41 +1,39 @@
-import importlib.util
+import importlib
 import inspect
-from pathlib import Path
+import pkgutil
 from personal_manager.core.plugin import Plugin
+import personal_manager.plugins
 
-def load_plugins(plugins_dir="personal_manager/plugins"):
+def load_plugins(plugins_dir=None) -> dict:
     """
-    Dynamically discovers and loads plugins from the specified directory.
-    
-    Plugins are expected to be in subdirectories, each containing an __init__.py 
-    that exports a class inheriting from the base Plugin class.
+    Dynamically discovers and loads plugins from the personal_manager.plugins package.
+    Works seamlessly in both interpreted source mode and frozen PyInstaller executables.
     
     Args:
-        plugins_dir (str): The path to the directory containing plugins.
+        plugins_dir (str, optional): Ignored. Included for backward compatibility.
         
     Returns:
         dict: A dictionary mapping plugin identifiers to instantiated Plugin objects.
     """
     plugins = {}
-    plugins_path = Path(plugins_dir)
     
-    if not plugins_path.exists():
-        return plugins
-
-    # Iterate through subdirectories in the plugins folder
-    for item in plugins_path.iterdir():
-        if item.is_dir() and not item.name.startswith("__"):
-            # Try to load the module dynamically
-            try:
-                module_name = f"personal_manager.plugins.{item.name}"
-                module = importlib.import_module(module_name)
-                
-                # Look for classes that implement the Plugin interface
-                for name, obj in inspect.getmembers(module):
-                    if inspect.isclass(obj) and issubclass(obj, Plugin) and obj is not Plugin:
-                        plugins[item.name] = obj()
-                        break
-            except Exception as e:
-                print(f"Error loading plugin {item.name}: {e}")
-    
+    try:
+        # pkgutil.iter_modules scans modules within personal_manager.plugins package path.
+        # This handles dynamic discovery correctly inside frozen binaries/libraries.
+        for module_info in pkgutil.iter_modules(personal_manager.plugins.__path__):
+            if module_info.ispkg:
+                try:
+                    module_name = f"personal_manager.plugins.{module_info.name}"
+                    module = importlib.import_module(module_name)
+                    
+                    # Look for classes that implement the Plugin interface
+                    for name, obj in inspect.getmembers(module):
+                        if inspect.isclass(obj) and issubclass(obj, Plugin) and obj is not Plugin:
+                            plugins[module_info.name] = obj()
+                            break
+                except Exception as e:
+                    print(f"Error loading plugin {module_info.name}: {e}")
+    except Exception as e:
+        print(f"Error scanning plugins package: {e}")
+        
     return plugins

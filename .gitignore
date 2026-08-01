@@ -176,3 +176,6 @@ data/
 # Plugin settings
 personal_manager.toml
 
+# Compiled package formats
+*.deb
+
