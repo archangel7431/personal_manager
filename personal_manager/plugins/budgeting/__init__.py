@@ -59,15 +59,12 @@ class BudgetingPlugin(Plugin):
         # Simple interactive loop for budgeting
         print("\n--- Budgeting Menu ---")
         print("1. Add Expense")
-        print("2. Run Daily Entry")
         print("q. Back to Main Menu")
         
         choice = input("Select an option: ")
         
         if choice == '1':
             budget.add_expense()
-        elif choice == '2':
-            budget.run_expense_entry_daily()
         elif choice == 'q':
             return
         else:
