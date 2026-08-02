@@ -48,6 +48,12 @@ def main():
     Main entry point for the Personal Manager CLI.
     Handles plugin discovery, state management, and plugin execution.
     """
+    # Check for --reset command-line flag
+    if len(sys.argv) > 1 and sys.argv[1] == "--reset":
+        from personal_manager.core.config import reset_application
+        reset_application()
+        sys.exit(0)
+
     # Ensure logs path and configuration exist
     ensure_first_run_setup()
     
