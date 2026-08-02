@@ -10,6 +10,7 @@ show_help() {
     echo "  --deb      Package the compiled binary into a Debian (.deb) package"
     echo "  --rpm      Package the compiled binary into a Fedora/RHEL (.rpm) package"
     echo "  --arch     Package the compiled binary into an Arch Linux package (.pkg.tar.zst)"
+    echo "  --tar      Package the compiled binary into a tarball (.tar.gz) package"
     echo "  -h, --help Show this help message"
     echo ""
     echo "By default, running with no options compiles only the standalone binary inside 'dist/'."
@@ -19,12 +20,14 @@ show_help() {
 BUILD_DEB=false
 BUILD_RPM=false
 BUILD_ARCH=false
+BUILD_TAR=false
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --deb) BUILD_DEB=true ;;
         --rpm) BUILD_RPM=true ;;
         --arch) BUILD_ARCH=true ;;
+        --tar) BUILD_TAR=true ;;
         -h|--help)
             show_help
             exit 0
@@ -205,6 +208,14 @@ EOT
         echo "Error: Failed to find generated Arch package!"
         exit 1
     fi
+fi
+
+# 8. Build Tarball Package
+if [ "$BUILD_TAR" = true ]; then
+    echo "=== Building Tarball Package ==="
+    echo "Packaging standalone binary into tarball..."
+    tar -czf personal-manager.tar.gz -C dist personal-manager
+    echo "Tarball package created: personal-manager.tar.gz"
 fi
 
 echo "=== Build Process Complete! ==="

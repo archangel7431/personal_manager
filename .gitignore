@@ -180,4 +180,10 @@ personal_manager.toml
 *.deb
 *.rpm
 *.pkg.tar.*
+*.tar.gz
+*.zip
+
+# Compiled executables in root
+/personal-manager
+/personal-manager.exe
 
