@@ -69,9 +69,6 @@ jobs:
     needs: [build-linux, build-windows]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Create artifacts directory
         run: mkdir -p ./artifacts
 
@@ -90,11 +87,7 @@ jobs:
       - name: Create Release and Upload Assets
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            ./artifacts/personal-manager.deb
-            ./artifacts/personal-manager-*.rpm
-            ./artifacts/personal-manager.tar.gz
-            ./artifacts/personal-manager.zip
+          files: ./artifacts/*
           draft: false
           prerelease: false
         env:
