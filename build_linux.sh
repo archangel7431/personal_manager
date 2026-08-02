@@ -105,7 +105,7 @@ if [ "$BUILD_DEB" = true ]; then
     
     cat <<EOT > "$DEB_DIR/DEBIAN/control"
 Package: personal-manager
-Version: 0.0.1
+Version: 0.1.0
 Section: utils
 Priority: optional
 Architecture: amd64
@@ -131,7 +131,7 @@ if [ "$BUILD_RPM" = true ]; then
     # Write RPM Spec file
     cat <<EOT > "$RPM_TOPDIR/SPECS/personal-manager.spec"
 Name:           personal-manager
-Version:        0.0.1
+Version:        0.1.0
 Release:        1%{?dist}
 Summary:        Personal Manager CLI application with budgeting and plugin management
 License:        MIT
@@ -149,7 +149,7 @@ chmod +x %{buildroot}/usr/bin/personal-manager
 /usr/bin/personal-manager
 
 %changelog
-* Sun Aug 02 2026 Developer <dev@personalmanager.local> - 0.0.1-1
+* Sun Aug 02 2026 Developer <dev@personalmanager.local> - 0.1.0-1
 - Initial release of personal-manager binary packaging.
 EOT
 
@@ -179,7 +179,7 @@ if [ "$BUILD_ARCH" = true ]; then
     # Write PKGBUILD
     cat <<EOT > "$ARCH_DIR/PKGBUILD"
 pkgname=personal-manager
-pkgver=0.0.1
+pkgver=0.1.0
 pkgrel=1
 pkgdesc="Personal Manager CLI application with budgeting and plugin management."
 arch=('x86_64')
