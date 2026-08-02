@@ -15,7 +15,7 @@ handlers:
   # Console handler: sends log messages to the console
   console:
     class: logging.StreamHandler
-    level: DEBUG
+    level: WARNING
     formatter: default
     stream: ext://sys.stdout
 

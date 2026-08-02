@@ -176,3 +176,14 @@ data/
 # Plugin settings
 personal_manager.toml
 
+# Compiled package formats
+*.deb
+*.rpm
+*.pkg.tar.*
+*.tar.gz
+*.zip
+
+# Compiled executables in root
+/personal-manager
+/personal-manager.exe
+

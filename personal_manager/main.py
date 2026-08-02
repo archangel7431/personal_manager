@@ -1,7 +1,7 @@
 import sys
 import os
 from personal_manager.core.loader import load_plugins
-from personal_manager.core.config import is_plugin_enabled, set_plugin_state, load_config
+from personal_manager.core.config import is_plugin_enabled, set_plugin_state, load_config, ensure_first_run_setup
 
 def clear_screen():
     """
@@ -48,6 +48,15 @@ def main():
     Main entry point for the Personal Manager CLI.
     Handles plugin discovery, state management, and plugin execution.
     """
+    # Check for --reset command-line flag
+    if len(sys.argv) > 1 and sys.argv[1] == "--reset":
+        from personal_manager.core.config import reset_application
+        reset_application()
+        sys.exit(0)
+
+    # Ensure logs path and configuration exist
+    ensure_first_run_setup()
+    
     # Ensure config exists and load it
     config = load_config()
     
