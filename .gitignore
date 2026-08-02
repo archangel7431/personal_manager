@@ -178,4 +178,6 @@ personal_manager.toml
 
 # Compiled package formats
 *.deb
+*.rpm
+*.pkg.tar.*
 
