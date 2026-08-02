@@ -12,20 +12,29 @@ def load_config() -> dict:
        dict: The configuration data. Returns a default structure if the file doesn't exist.
     """
     if not CONFIG_FILE.exists():
-        return {"project": {"name": "personal-manager", "version": "0.0.1"}, "plugins": {}}
+        return {"project": {"name": "personal-manager", "version": "0.1.0"}, "plugins": {}}
     
     try:
         with CONFIG_FILE.open("rb") as f:
             return tomllib.load(f)
-    except Exception:
+    except Exception as e:
+        print(f"Error loading configuration from {CONFIG_FILE}: {e}")
         # Fallback to default if configuration is corrupted
-        return {"project": {"name": "personal-manager", "version": "0.0.1"}, "plugins": {}}
+        return {"project": {"name": "personal-manager", "version": "0.1.0"}, "plugins": {}}
 
 def serialize_toml(data: dict) -> str:
     """
     Serializes a dictionary into a simple flat TOML string.
     Supports only one level of nested sections (e.g. [project], [plugins]).
     """
+    def escape_str(s: str) -> str:
+        s = s.replace('\\', '\\\\')
+        s = s.replace('"', '\\"')
+        s = s.replace('\n', '\\n')
+        s = s.replace('\r', '\\r')
+        s = s.replace('\t', '\\t')
+        return f'"{s}"'
+
     lines = []
     # Write top-level key-values first
     for k, v in data.items():
@@ -35,7 +44,7 @@ def serialize_toml(data: dict) -> str:
             elif isinstance(v, (int, float)):
                 val_str = str(v)
             else:
-                val_str = f'"{v}"'
+                val_str = escape_str(str(v))
             lines.append(f"{k} = {val_str}")
             
     # Write one-level sections
@@ -48,7 +57,7 @@ def serialize_toml(data: dict) -> str:
                 elif isinstance(v, (int, float)):
                     val_str = str(v)
                 else:
-                    val_str = f'"{v}"'
+                    val_str = escape_str(str(v))
                 lines.append(f"{k} = {val_str}")
     return "\n".join(lines) + "\n"
 

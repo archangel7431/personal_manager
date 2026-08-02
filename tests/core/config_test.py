@@ -3,12 +3,14 @@ from unittest.mock import patch, MagicMock
 from pathlib import Path
 import tempfile
 import shutil
+import tomllib
 
 from personal_manager.core.config import (
     is_safe_to_delete_dir,
     find_paths_in_config,
     reset_application,
-    is_path_inside_home
+    is_path_inside_home,
+    serialize_toml
 )
 
 class TestConfigReset(unittest.TestCase):
@@ -71,7 +73,7 @@ class TestConfigReset(unittest.TestCase):
         config = {
             "project": {
                 "name": "personal-manager",
-                "version": "0.0.1"
+                "version": "0.1.0"
             },
             "plugins": {
                 "budgeting": True
@@ -135,6 +137,31 @@ class TestConfigReset(unittest.TestCase):
         finally:
             # Restore original CONFIG_FILE path
             personal_manager.core.config.CONFIG_FILE = old_config_file
+
+class TestTOMLSerialization(unittest.TestCase):
+    def test_escaping_in_serialize_toml(self) -> None:
+        """Test that serialize_toml properly escapes strings containing backslashes and double quotes."""
+        data = {
+            "project": {
+                "name": "personal-manager",
+                "version": "0.1.0"
+            },
+            "paths": {
+                "log_dir": "C:\\Users\\username\\.personal_manager\\logs",
+                "quote_test": 'A "quoted" string'
+            }
+        }
+        
+        serialized = serialize_toml(data)
+        
+        # Verify that the serialized string contains properly escaped backslashes and double quotes
+        self.assertIn('log_dir = "C:\\\\Users\\\\username\\\\.personal_manager\\\\logs"', serialized)
+        self.assertIn('quote_test = "A \\"quoted\\" string"', serialized)
+        
+        # Verify that tomllib can load it successfully back to the original dictionary
+        loaded = tomllib.loads(serialized)
+        self.assertEqual(loaded["paths"]["log_dir"], "C:\\Users\\username\\.personal_manager\\logs")
+        self.assertEqual(loaded["paths"]["quote_test"], 'A "quoted" string')
 
 if __name__ == '__main__':
     unittest.main()

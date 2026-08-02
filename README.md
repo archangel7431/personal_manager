@@ -54,7 +54,7 @@ personal-manager
 Download the latest `personal-manager-*.rpm` from the [Releases Page](https://github.com/archangel7431/personal_manager/releases) and install it using `dnf`:
 
 ```bash
-sudo dnf install ./personal-manager-0.0.1-1.x86_64.rpm
+sudo dnf install ./personal-manager-0.1.0-1.x86_64.rpm
 ```
 
 Once installed, launch the application globally:
